@@ -26,13 +26,15 @@ phases:
       - python --version
       - echo 'export PATH=$PWD/:$PATH' >> $HOME/.bashrc
       - echo `kubectl version --short --client`
-      # Remove Corretto repository and its associated GPG key
+      # Remove Corretto repository and GPG key (ensure they're removed properly)
       - echo "Removing Corretto repository and GPG keys"
       - rm -f /etc/apt/sources.list.d/corretto.list || true
       - rm -f /etc/apt/trusted.gpg.d/corretto.gpg || true
+      - rm -f /etc/apt/sources.list.d/corretto-*.list || true
+      - rm -f /etc/apt/trusted.gpg.d/*corretto* || true
 
-      # Optionally remove Google Chrome repo (if needed)
-      - rm -f /etc/apt/sources.list.d/google-chrome.list || true
+      # Check which repositories are active (for debugging purposes)
+      - cat /etc/apt/sources.list.d/*.list
       ############################################################
       # Run apt-get update and install jq
       - apt-get update --allow-unauthenticated && apt-get -y install jq
