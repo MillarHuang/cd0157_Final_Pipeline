@@ -26,9 +26,15 @@ phases:
       - python --version
       - echo 'export PATH=$PWD/:$PATH' >> $HOME/.bashrc
       - echo `kubectl version --short --client`
-      # Remove broken APT repos to avoid GPG issues
+      ## Remove Corretto repository, GPG key, and other possible sources
+      - echo "Removing Corretto repository and GPG keys"
       - rm -f /etc/apt/sources.list.d/corretto.list || true
-      - rm -f /etc/apt/sources.list.d/google-chrome.list || true
+      - rm -f /etc/apt/trusted.gpg.d/corretto.gpg || true
+
+      # If still issues with Corretto repo, disable the repo instead
+      - echo "Disabling Corretto repository"
+      - sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/corretto.list || true
+      
       # Remove Google Chrome repo if necessary
       - rm -f /etc/apt/sources.list.d/google-chrome.list || true
       ############################################################
