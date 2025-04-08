@@ -26,19 +26,17 @@ phases:
       - python --version
       - echo 'export PATH=$PWD/:$PATH' >> $HOME/.bashrc
       - echo `kubectl version --short --client`
-      ## Remove Corretto repository, GPG key, and other possible sources
+      # Remove Corretto repository and its associated GPG key
       - echo "Removing Corretto repository and GPG keys"
       - rm -f /etc/apt/sources.list.d/corretto.list || true
       - rm -f /etc/apt/trusted.gpg.d/corretto.gpg || true
 
-      # If still issues with Corretto repo, disable the repo instead
-      - echo "Disabling Corretto repository"
-      - sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/corretto.list || true
-      
-      # Remove Google Chrome repo if necessary
+      # Optionally remove Google Chrome repo (if needed)
       - rm -f /etc/apt/sources.list.d/google-chrome.list || true
       ############################################################
-      - apt-get update && apt-get -y install jq
+      # Run apt-get update and install jq
+      - apt-get update --allow-unauthenticated && apt-get -y install jq
+      # - apt-get update && apt-get -y install jq
       - pip install --upgrade awscli
       - python -m pip install --upgrade --force pip
   pre_build:
